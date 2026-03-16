@@ -3,7 +3,7 @@
 # 洁衣到家 - 一键启动脚本
 # ============================================
 # 后端:    http://localhost:8080
-# 管理端:  http://localhost:8848
+# 管理端:  http://localhost:3006
 # 用户端:  http://localhost:3000
 # ============================================
 
@@ -26,7 +26,7 @@ cleanup() {
   [ -n "$FRONTEND_PID" ] && kill "$FRONTEND_PID" 2>/dev/null
   # 也按端口清理
   lsof -ti:8080 | xargs kill 2>/dev/null
-  lsof -ti:8848 | xargs kill 2>/dev/null
+  lsof -ti:3006 | xargs kill 2>/dev/null
   lsof -ti:3000 | xargs kill 2>/dev/null
   echo -e "${GREEN}✅ 所有服务已停止${NC}"
   exit 0
@@ -66,7 +66,7 @@ done
 echo ""
 
 # ---- 2. 启动管理端 ----
-echo -e "${YELLOW}[2/3] 启动管理端 (Geeker-Admin :8848)...${NC}"
+echo -e "${YELLOW}[2/3] 启动管理端 (ArtDesign-Pro :3006)...${NC}"
 cd "$PROJECT_DIR/admin"
 if [ ! -d "node_modules" ]; then
   echo -e "${YELLOW}   📦 首次运行，安装管理端依赖...${NC}"
@@ -90,16 +90,23 @@ echo -e "${GREEN}   用户端已启动 (PID: $FRONTEND_PID)，日志: .frontend.
 # ---- 完成 ----
 sleep 2
 echo ""
-echo -e "${BLUE}╔══════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║${NC}  ${GREEN}🎉 所有服务启动完成！${NC}                       ${BLUE}║${NC}"
-echo -e "${BLUE}║${NC}                                              ${BLUE}║${NC}"
-echo -e "${BLUE}║${NC}  📡 后端API:  ${GREEN}http://localhost:8080${NC}          ${BLUE}║${NC}"
-echo -e "${BLUE}║${NC}  🔧 管理端:   ${GREEN}http://localhost:8848${NC}          ${BLUE}║${NC}"
-echo -e "${BLUE}║${NC}  🌐 用户端:   ${GREEN}http://localhost:3000${NC}          ${BLUE}║${NC}"
-echo -e "${BLUE}║${NC}                                              ${BLUE}║${NC}"
-echo -e "${BLUE}║${NC}  管理员账号: admin / 123456                  ${BLUE}║${NC}"
-echo -e "${BLUE}║${NC}  按 ${RED}Ctrl+C${NC} 停止所有服务                     ${BLUE}║${NC}"
-echo -e "${BLUE}╚══════════════════════════════════════════════╝${NC}"
+echo -e "${BLUE}╔══════════════════════════════════════════════════╗${NC}"
+echo -e "${BLUE}║${NC}  ${GREEN}🎉 所有服务启动完成！${NC}                           ${BLUE}║${NC}"
+echo -e "${BLUE}╠══════════════════════════════════════════════════╣${NC}"
+echo -e "${BLUE}║${NC}  📡 后端API:  ${GREEN}http://localhost:8080${NC}              ${BLUE}║${NC}"
+echo -e "${BLUE}║${NC}  🔧 管理端:   ${GREEN}http://localhost:3006${NC}              ${BLUE}║${NC}"
+echo -e "${BLUE}║${NC}  🌐 用户端:   ${GREEN}http://localhost:3000${NC}              ${BLUE}║${NC}"
+echo -e "${BLUE}╠══════════════════════════════════════════════════╣${NC}"
+echo -e "${BLUE}║${NC}  ${YELLOW}测试账号（密码均为 123456）${NC}                      ${BLUE}║${NC}"
+echo -e "${BLUE}║${NC}  ─────────────────────────────────────────────  ${BLUE}║${NC}"
+echo -e "${BLUE}║${NC}  👨‍💼 管理员:  admin                                 ${BLUE}║${NC}"
+echo -e "${BLUE}║${NC}  👤 普通用户: user1 / user2 / user3                 ${BLUE}║${NC}"
+echo -e "${BLUE}║${NC}  🏍️ 骑手:     rider1 / rider2 / rider3              ${BLUE}║${NC}"
+echo -e "${BLUE}╠══════════════════════════════════════════════════╣${NC}"
+echo -e "${BLUE}║${NC}  管理员登录管理端，用户/骑手登录用户端            ${BLUE}║${NC}"
+echo -e "${BLUE}║${NC}  骑手登录后可看到专属的 [我的派单] [收入查询]     ${BLUE}║${NC}"
+echo -e "${BLUE}║${NC}  按 ${RED}Ctrl+C${NC} 停止所有服务                             ${BLUE}║${NC}"
+echo -e "${BLUE}╚══════════════════════════════════════════════════╝${NC}"
 echo ""
 
 # 保持脚本运行，等待用户 Ctrl+C

@@ -40,3 +40,9 @@ export const addComplaint = (data: any) => http.post('/complaints', data)
 
 // 公告
 export const getAnnouncements = (params?: any) => http.get('/announcements', { params })
+
+// 骑手
+export const getRiderAssignments = (params: any) => http.get('/orders/rider/my', { params })
+export const acceptAssignment = (id: number) => http.put(`/orders/rider/assignment/${id}/accept`)
+export const completeAssignment = (id: number) => http.put(`/orders/rider/assignment/${id}/complete`)
+export const getRiderIncomes = (params?: any) => http.get('/rider-incomes', { params })

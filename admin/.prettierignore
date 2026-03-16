@@ -1,9 +1,3 @@
+/node_modules/*
 /dist/*
-.local
-/node_modules/**
-
-**/*.svg
-**/*.sh
-
-/public/*
-stats.html
+/src/main.ts

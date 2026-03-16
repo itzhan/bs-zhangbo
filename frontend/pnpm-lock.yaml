@@ -14,6 +14,9 @@ importers:
       axios:
         specifier: ^1.7.0
         version: 1.13.5
+      lucide-vue-next:
+        specifier: ^0.577.0
+        version: 0.577.0(vue@3.5.28)
       naive-ui:
         specifier: ^2.40.0
         version: 2.43.2(vue@3.5.28)
@@ -690,6 +693,11 @@ packages:
   lodash@4.17.23:
     resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
 
+  lucide-vue-next@0.577.0:
+    resolution: {integrity: sha512-py05bAfv9SHVJqscbiOnjcnLlEmOffA58a+7XhZuFxrs6txe1E8VoR1ngWGTYO+9aVKABAz8l3ee3PqiQN9QPA==}
+    peerDependencies:
+      vue: '>=3.0.1'
+
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
@@ -1363,6 +1371,10 @@ snapshots:
   lodash-es@4.17.23: {}
 
   lodash@4.17.23: {}
+
+  lucide-vue-next@0.577.0(vue@3.5.28):
+    dependencies:
+      vue: 3.5.28
 
   magic-string@0.30.21:
     dependencies:

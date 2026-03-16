@@ -28,8 +28,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public Result<?> login(@RequestBody @Valid LoginDTO dto) {
+        String username = dto.getUsername().trim();
         SysUser user = userMapper.selectOne(
-                new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, dto.getUsername()));
+                new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
         if (user == null || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new BusinessException("用户名或密码错误");
         }

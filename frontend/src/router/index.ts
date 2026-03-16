@@ -13,6 +13,9 @@ const routes = [
   { path: '/user/address', name: 'Address', component: () => import('@/views/user/Address.vue'), meta: { title: '地址管理', auth: true } },
   { path: '/review', name: 'Review', component: () => import('@/views/review/index.vue'), meta: { title: '我的评价', auth: true } },
   { path: '/complaint', name: 'Complaint', component: () => import('@/views/complaint/index.vue'), meta: { title: '投诉反馈', auth: true } },
+  // 骑手专属页面
+  { path: '/rider/assignments', name: 'RiderAssignments', component: () => import('@/views/rider/Assignments.vue'), meta: { title: '我的派单', auth: true, rider: true } },
+  { path: '/rider/income', name: 'RiderIncome', component: () => import('@/views/rider/Income.vue'), meta: { title: '收入查询', auth: true, rider: true } },
 ]
 
 const router = createRouter({

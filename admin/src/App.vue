@@ -1,44 +1,41 @@
 <template>
-  <el-config-provider :locale="locale" :size="assemblySize" :button="buttonConfig">
-    <router-view></router-view>
-  </el-config-provider>
+  <ElConfigProvider
+    size="default"
+    :locale="locales[language]"
+    :z-index="3000"
+    :card="{
+      shadow: 'never'
+    }"
+  >
+    <RouterView></RouterView>
+  </ElConfigProvider>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, computed } from "vue";
-import { useI18n } from "vue-i18n";
-import { getBrowserLang } from "@/utils";
-import { useTheme } from "@/hooks/useTheme";
-import { ElConfigProvider } from "element-plus";
-import { LanguageType } from "./stores/interface";
-import { useGlobalStore } from "@/stores/modules/global";
-import en from "element-plus/es/locale/lang/en";
-import zhCn from "element-plus/es/locale/lang/zh-cn";
+  import { useUserStore } from './store/modules/user'
+  import zh from 'element-plus/es/locale/lang/zh-cn'
+  import en from 'element-plus/es/locale/lang/en'
+  import { systemUpgrade } from './utils/sys'
+  import { toggleTransition } from './utils/ui/animation'
+  import { checkStorageCompatibility } from './utils/storage'
+  import { initializeTheme } from './hooks/core/useTheme'
 
-const globalStore = useGlobalStore();
+  const userStore = useUserStore()
+  const { language } = storeToRefs(userStore)
 
-// init theme
-const { initTheme } = useTheme();
-initTheme();
+  const locales = {
+    zh: zh,
+    en: en
+  }
 
-// init language
-const i18n = useI18n();
-onMounted(() => {
-  const language = globalStore.language ?? getBrowserLang();
-  i18n.locale.value = language;
-  globalStore.setGlobalState("language", language as LanguageType);
-});
+  onBeforeMount(() => {
+    toggleTransition(true)
+    initializeTheme()
+  })
 
-// element language
-const locale = computed(() => {
-  if (globalStore.language == "zh") return zhCn;
-  if (globalStore.language == "en") return en;
-  return getBrowserLang() == "zh" ? zhCn : en;
-});
-
-// element assemblySize
-const assemblySize = computed(() => globalStore.assemblySize);
-
-// element button config
-const buttonConfig = reactive({ autoInsertSpace: false });
+  onMounted(() => {
+    checkStorageCompatibility()
+    toggleTransition(false)
+    systemUpgrade()
+  })
 </script>

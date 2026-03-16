@@ -1,28 +1,14 @@
-import { App, Directive } from "vue";
-import auth from "./modules/auth";
-import copy from "./modules/copy";
-import waterMarker from "./modules/waterMarker";
-import draggable from "./modules/draggable";
-import debounce from "./modules/debounce";
-import throttle from "./modules/throttle";
-import longpress from "./modules/longpress";
+import type { App } from 'vue'
+import { setupAuthDirective, type AuthDirective } from './core/auth'
+import { setupHighlightDirective, type HighlightDirective } from './business/highlight'
+import { setupRippleDirective, type RippleDirective } from './business/ripple'
+import { setupRolesDirective, type RolesDirective } from './core/roles'
 
-const directivesList: { [key: string]: Directive } = {
-  auth,
-  copy,
-  waterMarker,
-  draggable,
-  debounce,
-  throttle,
-  longpress
-};
+export function setupGlobDirectives(app: App) {
+  setupAuthDirective(app) // 权限指令
+  setupRolesDirective(app) // 角色权限指令
+  setupHighlightDirective(app) // 高亮指令
+  setupRippleDirective(app) // 水波纹指令
+}
 
-const directives = {
-  install: function (app: App<Element>) {
-    Object.keys(directivesList).forEach(key => {
-      app.directive(key, directivesList[key]);
-    });
-  }
-};
-
-export default directives;
+export type { AuthDirective, HighlightDirective, RippleDirective, RolesDirective }

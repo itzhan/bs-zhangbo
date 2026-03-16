@@ -1,6 +1,6 @@
 <template>
-  <div class="table-box">
-    <el-form :inline="true" :model="searchForm" class="search-form">
+  <div class="p-4">
+    <el-form :inline="true" :model="searchForm" class="mb-4">
       <el-form-item label="状态">
         <el-select v-model="searchForm.status" placeholder="全部" clearable style="width: 140px">
           <el-option v-for="s in statusOptions" :key="s.value" :label="s.label" :value="s.value" />
@@ -29,7 +29,7 @@
       <el-table-column label="操作" width="240" fixed="right">
         <template #default="{ row }">
           <el-button size="small" @click="viewDetail(row)">详情</el-button>
-          <el-button size="small" type="warning" v-if="row.status==='PAID'" @click="assignRider(row)">派单</el-button>
+          <el-button size="small" type="warning" v-if="row.status === 'PAID'" @click="assignRider(row)">派单</el-button>
           <el-button size="small" type="primary" v-if="canAdvance(row.status)" @click="advanceStatus(row)">推进</el-button>
           <el-button size="small" type="danger" v-if="canCancel(row.status)" @click="cancelOrder(row)">取消</el-button>
         </template>
@@ -67,93 +67,91 @@
       </el-descriptions>
       <el-table :data="detailData.items || []" border size="small" style="margin-top: 16px">
         <el-table-column prop="serviceName" label="服务项目" />
-        <el-table-column prop="price" label="单价" width="100"><template #default="{row}">¥{{ row.price }}</template></el-table-column>
+        <el-table-column prop="price" label="单价" width="100"><template #default="{ row }">¥{{ row.price }}</template></el-table-column>
         <el-table-column prop="quantity" label="数量" width="80" />
-        <el-table-column prop="subtotal" label="小计" width="100"><template #default="{row}">¥{{ row.subtotal }}</template></el-table-column>
+        <el-table-column prop="subtotal" label="小计" width="100"><template #default="{ row }">¥{{ row.subtotal }}</template></el-table-column>
       </el-table>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import http from "@/api";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ref, onMounted } from 'vue'
+import http from '@/api/http'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
-const loading = ref(false);
-const tableData = ref<any[]>([]);
-const page = ref(1);
-const size = ref(10);
-const total = ref(0);
-const searchForm = ref({ status: "" });
-const assignVisible = ref(false);
-const detailVisible = ref(false);
-const selectedRiderId = ref<number>();
-const currentOrder = ref<any>({});
-const detailData = ref<any>({});
-const riderList = ref<any[]>([]);
+defineOptions({ name: 'OrderList' })
+
+const loading = ref(false)
+const tableData = ref<any[]>([])
+const page = ref(1)
+const size = ref(10)
+const total = ref(0)
+const searchForm = ref({ status: '' })
+const assignVisible = ref(false)
+const detailVisible = ref(false)
+const selectedRiderId = ref<number>()
+const currentOrder = ref<any>({})
+const detailData = ref<any>({})
+const riderList = ref<any[]>([])
 
 const statusOptions = [
-  { label: "待支付", value: "PENDING_PAY" }, { label: "已支付", value: "PAID" },
-  { label: "已派单", value: "ASSIGNED" }, { label: "已取件", value: "PICKED_UP" },
-  { label: "清洗中", value: "WASHING" }, { label: "已清洗", value: "WASHED" },
-  { label: "配送中", value: "DELIVERING" }, { label: "已完成", value: "COMPLETED" },
-  { label: "已取消", value: "CANCELLED" }
-];
-const statusMap: Record<string, string> = Object.fromEntries(statusOptions.map(s => [s.value, s.label]));
-const statusTagType = (s: string) => ({ COMPLETED: "success", CANCELLED: "info", PENDING_PAY: "warning", PAID: "", ASSIGNED: "", PICKED_UP: "", WASHING: "", WASHED: "", DELIVERING: "primary" }[s] || "");
-const nextStatus: Record<string, string> = { ASSIGNED: "PICKED_UP", PICKED_UP: "WASHING", WASHING: "WASHED", WASHED: "DELIVERING", DELIVERING: "COMPLETED" };
-const canAdvance = (s: string) => !!nextStatus[s];
-const canCancel = (s: string) => ["PENDING_PAY", "PAID", "ASSIGNED"].includes(s);
+  { label: '待支付', value: 'PENDING_PAY' }, { label: '已支付', value: 'PAID' },
+  { label: '已派单', value: 'ASSIGNED' }, { label: '已取件', value: 'PICKED_UP' },
+  { label: '清洗中', value: 'WASHING' }, { label: '已清洗', value: 'WASHED' },
+  { label: '配送中', value: 'DELIVERING' }, { label: '已完成', value: 'COMPLETED' },
+  { label: '已取消', value: 'CANCELLED' }
+]
+const statusMap: Record<string, string> = Object.fromEntries(statusOptions.map(s => [s.value, s.label]))
+const statusTagType = (s: string) => ({ COMPLETED: 'success', CANCELLED: 'info', PENDING_PAY: 'warning', DELIVERING: 'primary' } as any)[s] || ''
+const nextStatus: Record<string, string> = { ASSIGNED: 'PICKED_UP', PICKED_UP: 'WASHING', WASHING: 'WASHED', WASHED: 'DELIVERING', DELIVERING: 'COMPLETED' }
+const canAdvance = (s: string) => !!nextStatus[s]
+const canCancel = (s: string) => ['PENDING_PAY', 'PAID', 'ASSIGNED'].includes(s)
 
 const fetchData = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    const { data } = await http.get("/orders", { page: page.value, size: size.value, status: searchForm.value.status || undefined });
-    tableData.value = data.records;
-    total.value = data.total;
-  } finally { loading.value = false; }
-};
+    const data = await http.get('/api/orders', { page: page.value, size: size.value, status: searchForm.value.status || undefined })
+    tableData.value = data.records
+    total.value = data.total
+  } finally { loading.value = false }
+}
 
 const viewDetail = async (row: any) => {
-  const { data } = await http.get(`/orders/${row.id}`);
-  detailData.value = data;
-  detailVisible.value = true;
-};
+  const data = await http.get(`/api/orders/${row.id}`)
+  detailData.value = data
+  detailVisible.value = true
+}
 
 const assignRider = async (row: any) => {
-  currentOrder.value = row;
-  const { data } = await http.get("/admin/users", { role: "RIDER", page: 1, size: 100 });
-  riderList.value = data.records;
-  assignVisible.value = true;
-};
+  currentOrder.value = row
+  const data = await http.get('/api/admin/users', { role: 'RIDER', page: 1, size: 100 })
+  riderList.value = data.records
+  assignVisible.value = true
+}
 
 const doAssign = async () => {
-  if (!selectedRiderId.value) return ElMessage.warning("请选择骑手");
-  await http.post(`/orders/${currentOrder.value.id}/assign`, { riderId: selectedRiderId.value });
-  ElMessage.success("派单成功");
-  assignVisible.value = false;
-  fetchData();
-};
+  if (!selectedRiderId.value) return ElMessage.warning('请选择骑手')
+  await http.post(`/api/orders/${currentOrder.value.id}/assign`, { riderId: selectedRiderId.value })
+  ElMessage.success('派单成功')
+  assignVisible.value = false
+  fetchData()
+}
 
 const advanceStatus = async (row: any) => {
-  const ns = nextStatus[row.status];
-  await ElMessageBox.confirm(`确认将订单推进到 ${statusMap[ns] || ns}？`, "提示");
-  await http.put(`/orders/${row.id}/status`, { status: ns });
-  ElMessage.success("状态更新成功");
-  fetchData();
-};
+  const ns = nextStatus[row.status]
+  await ElMessageBox.confirm(`确认将订单推进到 ${statusMap[ns] || ns}？`, '提示')
+  await http.put(`/api/orders/${row.id}/status`, { status: ns })
+  ElMessage.success('状态更新成功')
+  fetchData()
+}
 
 const cancelOrder = async (row: any) => {
-  await ElMessageBox.confirm("确认取消此订单？", "警告", { type: "warning" });
-  await http.post(`/orders/${row.id}/cancel`, { reason: "管理员取消" });
-  ElMessage.success("取消成功");
-  fetchData();
-};
+  await ElMessageBox.confirm('确认取消此订单？', '警告', { type: 'warning' })
+  await http.post(`/api/orders/${row.id}/cancel`, { reason: '管理员取消' })
+  ElMessage.success('取消成功')
+  fetchData()
+}
 
-onMounted(fetchData);
+onMounted(fetchData)
 </script>
-
-<style scoped>
-.search-form { margin-bottom: 16px; }
-</style>

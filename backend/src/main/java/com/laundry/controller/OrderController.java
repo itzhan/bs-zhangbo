@@ -87,6 +87,18 @@ public class OrderController {
         return Result.success("派单成功");
     }
 
+    // 管理端查询所有派单记录
+    @GetMapping("/admin/assignments")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Result<?> adminAssignments(@RequestParam(defaultValue = "1") int page,
+                                       @RequestParam(defaultValue = "20") int size) {
+        IPage<RiderAssignment> assignments = assignmentMapper.selectPage(
+                new Page<>(page, size),
+                new LambdaQueryWrapper<RiderAssignment>()
+                        .orderByDesc(RiderAssignment::getCreatedAt));
+        return Result.success(assignments);
+    }
+
     // 骑手相关接口
     @GetMapping("/rider/my")
     @PreAuthorize("hasRole('RIDER')")

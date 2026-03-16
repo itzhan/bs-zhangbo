@@ -11,6 +11,7 @@ public class RiderIncome {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long riderId;
+    @TableField("`year_month`")
     private String yearMonth;
     private Integer totalOrders;
     private BigDecimal totalIncome;
